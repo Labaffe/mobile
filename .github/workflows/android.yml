@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,3 +25,18 @@ jobs:
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      # Publie l'APK dans une release « latest » pour pouvoir l'installer
+      # directement depuis le téléphone (lien fixe, sans fichier zip).
+      - name: Publication de l'APK (release « latest »)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk mobile.apk
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest mobile.apk \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Dernière version (build #$GITHUB_RUN_NUMBER)" \
+            --notes "Branche ${GITHUB_REF_NAME} — commit ${GITHUB_SHA::7}"

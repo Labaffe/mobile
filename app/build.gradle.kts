@@ -12,10 +12,23 @@ android {
         applicationId = "com.labaffe.mobile"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        // La CI fournit le numéro d'exécution pour que chaque build soit une nouvelle version
+        val buildNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
+        versionCode = buildNumber
+        versionName = "0.1.$buildNumber"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        // Clé de debug fixe, versionnée : chaque APK construit par la CI a la même
+        // signature, ce qui permet d'installer les mises à jour sans désinstaller.
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {

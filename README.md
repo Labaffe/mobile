@@ -39,6 +39,19 @@ gradle/libs.versions.toml  # versions des dépendances
 Le workflow `.github/workflows/android.yml` lance les tests et construit l'APK debug à chaque push ;
 l'APK est téléchargeable dans les artefacts de l'exécution GitHub Actions.
 
+## Tester sur son téléphone (sans PC)
+
+À chaque push, la CI publie l'APK dans la release **latest** :
+https://github.com/Labaffe/mobile/releases/tag/latest
+
+1. Ouvrir ce lien sur le téléphone (connecté à GitHub) et télécharger `mobile.apk`.
+2. La première fois, autoriser le navigateur à « installer des applis inconnues ».
+3. Ouvrir le fichier téléchargé → *Installer* (ou *Mettre à jour*).
+
+L'APK est signé avec une clé de debug fixe (`app/debug.keystore`), donc les nouvelles
+versions s'installent par-dessus l'ancienne sans désinstaller.
+Cette clé n'est **pas** destinée à une publication sur le Play Store.
+
 ## Configuration
 
 - Package : `com.labaffe.mobile`
